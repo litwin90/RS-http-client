@@ -1,90 +1,44 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { GeneratorService, ProgressBarService } from '../../shared';
-import { IEntity } from '../models';
+import { Observable } from 'rxjs';
 
-let ENTITIES: IEntity[] = [
-    {
-        id: 'AOONAga',
-        name: 'Entity 1',
-    },
-    {
-        name: 'Entity 2',
-        id: 'AOONAgs',
-    },
-    {
-        name: 'Entity 3',
-        id: 'ka3poDh',
-    },
-    {
-        name: 'Entity 4',
-        id: 'I9EDJNK',
-    },
-];
+import { environment } from '../../../environments/environment';
+import { IEntity } from '../models';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EntitiesHttpService {
-    shouldReturnError = false;
+    // shouldReturnError = false;
 
-    constructor(
-        private stringGenerator: GeneratorService,
-        private progressBar: ProgressBarService,
-    ) {}
+    constructor(private http: HttpClient) {}
 
-    getEntities(): Promise<IEntity[]> {
-        return this.shouldReturnError
-            ? this.rejectedPromiseWithDelay()
-            : Promise.resolve([...ENTITIES]);
+    getEntities(): Observable<IEntity[]> {
+        return this.http.get<IEntity[]>(environment.apiEntitiesUrl);
+
+        // return this.shouldReturnError
+        //     ? Observable.throw('Smth wrong')
+        //     : this.http.get<IEntity[]>(environment.apiEntitiesUrl);
     }
 
-    addEntity(entity: Pick<IEntity, 'name'>): Promise<IEntity> {
-        const newEntity = {
-            ...entity,
-            id: this.stringGenerator.getRandomString(5),
-        };
-        ENTITIES.push(newEntity);
-        return this.shouldReturnError
-            ? this.rejectedPromiseWithDelay()
-            : this.promiseWithDelay(newEntity);
+    addEntity(entity: Pick<IEntity, 'name'>): Observable<IEntity> {
+        return this.http.post<IEntity>(environment.apiEntitiesUrl, entity);
     }
 
     updateEntity(
         entityId: string,
-        { name }: Partial<IEntity>,
-    ): Promise<IEntity> {
-        ENTITIES = ENTITIES.filter(({ id }) => id !== entityId);
-        ENTITIES.push({ id: entityId, name });
-        return this.shouldReturnError
-            ? this.rejectedPromiseWithDelay()
-            : this.promiseWithDelay({ id: entityId, name });
+        entity: Partial<IEntity>,
+    ): Observable<IEntity> {
+        return this.http.put<IEntity>(
+            `${environment.apiEntitiesUrl}/${entityId}`,
+            entity,
+        );
     }
 
-    delete(entityId: string): Promise<void> {
-        ENTITIES = ENTITIES.filter(({ id }) => id !== entityId);
-        return this.shouldReturnError
-            ? this.rejectedPromiseWithDelay()
-            : this.promiseWithDelay();
-    }
-
-    private promiseWithDelay<T>(dataToResolve?: T): Promise<T> {
-        return new Promise((resolve) => {
-            this.progressBar.show();
-            setTimeout(() => {
-                this.progressBar.hide();
-                resolve(dataToResolve);
-            }, 2000);
-        });
-    }
-
-    private rejectedPromiseWithDelay<T>() {
-        return new Promise<T>((_, reject) => {
-            this.progressBar.show();
-            setTimeout(() => {
-                this.progressBar.hide();
-                reject('Smth went wrong');
-            }, 2000);
-        });
+    delete(entityId: string): Observable<void> {
+        return this.http.delete<void>(
+            `${environment.apiEntitiesUrl}/${entityId}`,
+        );
     }
 }

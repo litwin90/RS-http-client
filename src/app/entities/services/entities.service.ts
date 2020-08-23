@@ -21,37 +21,23 @@ export class EntitiesService {
         private dialog: DialogService,
     ) {
         this.entitiesSubject = new BehaviorSubject([...this.entities]);
-        entitiesHTTP
-            .getEntities()
-            .then((entities) => {
-                this.entities = entities;
-                this.updateData();
-            })
-            .catch((error: string) => {
-                dialog.show({
-                    message: error,
-                });
-            });
+        entitiesHTTP.getEntities().subscribe((entities) => {
+            this.entities = entities;
+            this.updateData();
+        });
     }
 
     add(entity: Pick<IEntity, 'name'>) {
-        this.entitiesHTTP
-            .addEntity(entity)
-            .then((newEntity) => {
-                this.entities.push(newEntity);
-                this.updateData();
-            })
-            .catch((error: string) => {
-                this.dialog.show({
-                    message: error,
-                });
-            });
+        this.entitiesHTTP.addEntity(entity).subscribe((newEntity) => {
+            this.entities.push(newEntity);
+            this.updateData();
+        });
     }
 
     update(entityId: string, { name }: Partial<IEntity>) {
         this.entitiesHTTP
             .updateEntity(entityId, { name })
-            .then((updatedEntity) => {
+            .subscribe((updatedEntity) => {
                 const entityToUpdate = this.entities.find(
                     (entity) => entity.id === updatedEntity.id,
                 );
@@ -59,11 +45,6 @@ export class EntitiesService {
                 entityToUpdate.name = name ? name : entityToUpdate.name;
 
                 this.updateData();
-            })
-            .catch((error: string) => {
-                this.dialog.show({
-                    message: error,
-                });
             });
     }
 
@@ -72,19 +53,12 @@ export class EntitiesService {
             .ask({
                 message: 'Are you sure you want to delete entity?',
                 acceptAction: () => {
-                    this.entitiesHTTP
-                        .delete(entityId)
-                        .then(() => {
-                            this.entities = this.entities.filter(
-                                ({ id }) => id !== entityId,
-                            );
-                            this.updateData();
-                        })
-                        .catch((error: string) => {
-                            this.dialog.show({
-                                message: error,
-                            });
-                        });
+                    this.entitiesHTTP.delete(entityId).subscribe(() => {
+                        this.entities = this.entities.filter(
+                            ({ id }) => id !== entityId,
+                        );
+                        this.updateData();
+                    });
                 },
             })
             .subscribe();
