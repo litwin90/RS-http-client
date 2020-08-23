@@ -1,0 +1,68 @@
+<table mat-table [dataSource]="entities" class="example-container mat-elevation-z8">
+    <!-- Id Column -->
+    <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>  </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        <td mat-footer-cell *matFooterCellDef> Id </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+            <form>
+                <mat-form-field>
+                    <mat-label>Entity Name</mat-label>
+                    <input
+                        matInput
+                        placeholder="Enter name"
+                        [(ngModel)]="newEntity.name"
+                        type="text"
+                        maxlength="15"
+                        name="newEntityName"
+                    >
+                </mat-form-field>
+            </form>
+        </th>
+        <td mat-cell *matCellDef="let element">
+            <span *ngIf="!element.isEdited">{{element.name}}</span>
+            <form *ngIf="element.isEdited">
+                <mat-form-field>
+                    <input
+                        matInput
+                        [(ngModel)]="element.name"
+                        type="text"
+                        maxlength="15"
+                        name="editedEntityName"
+                    >
+                </mat-form-field>
+            </form>
+        </td>
+        <td mat-footer-cell *matFooterCellDef> Name </td>
+    </ng-container>
+
+    <!-- Controls Column -->
+    <ng-container matColumnDef="controls">
+        <th mat-header-cell *matHeaderCellDef class="align-right">
+            <button mat-icon-button color="primary" (click)="onAddEntity()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </th>
+        <td mat-cell *matCellDef="let element" class="align-right">
+            <button *ngIf="!element.isEdited" mat-icon-button color="primary" (click)="onEditEntity(element.id)">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button *ngIf="element.isEdited" mat-icon-button color="primary" (click)="onSaveEntity(element.id)">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="onDeleteEntity(element.id)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </td>
+        <td mat-footer-cell *matFooterCellDef ></td>
+
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+</table>

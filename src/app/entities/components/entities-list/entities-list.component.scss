@@ -1,0 +1,46 @@
+:host {
+    position: relative;
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+table {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    // margin-top: 4px;
+}
+
+.align-right {
+    display: flex;
+    justify-content: flex-end;
+    padding: 9px 0;
+}
+
+.mat-table {
+    overflow: auto;
+    max-height: 270px;
+}
+
+.add {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+tr.mat-header-row {
+    font-weight: bold;
+}
+
+.example-container {
+    overflow: auto;
+}
+
+.mat-table-sticky {
+    border-top: 1px solid #e0e0e0;
+}
+
+.mat-header-cell {
+    padding-top: 20px;
+}
