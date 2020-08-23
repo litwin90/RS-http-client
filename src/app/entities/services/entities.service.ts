@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { DialogService } from '../../shared';
-import { ConfirmationService } from '../../shared/services/confirmation.service';
+import { ConfirmationService, DialogService } from '../../shared';
 import { IEntity } from '../models';
 import { EntitiesHttpService } from './entities-http.service';
 
