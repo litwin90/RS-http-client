@@ -12,10 +12,22 @@ import { IEntity } from '../models';
     providedIn: 'root',
 })
 export class EntitiesHttpService {
+    private textExampleFileUrl = 'assets/textExample.txt';
+
     constructor(
         private http: HttpClient,
         private configService: ConfigService,
-    ) {}
+    ) {
+        this.getText();
+    }
+
+    getText() {
+        this.http
+            .get(this.textExampleFileUrl, { responseType: 'text' })
+            .subscribe((textFileContent) => {
+                console.log(textFileContent);
+            });
+    }
 
     getEntities(): Observable<IEntity[]> {
         const { config } = this.configService;
