@@ -24,28 +24,9 @@ export class EntitiesHttpService {
             return this.configService.getConfig().pipe(
                 switchMap((response) => {
                     if (response) {
-                        const {
-                            body,
-                            headers,
-                            ok,
-                            status,
-                            statusText,
-                            type,
-                            url,
-                        } = response;
-
-                        const keys = headers.keys();
-                        console.log(`Response is ok: ${ok}`);
-                        console.log(`Response status: ${status}`);
-                        console.log(`Response statusText: ${statusText}`);
-                        console.log(`Response type: ${type}`);
-                        console.log(`Response url: ${url}`);
-                        console.log(`Response headers keys: ${keys}`);
-
-                        console.log('Response object:');
-                        console.log(response);
-
-                        return this.http.get<IEntity[]>(body.apiEntitiesUrl);
+                        return this.http.get<IEntity[]>(
+                            response.body.apiEntitiesUrl,
+                        );
                     }
                     return of([]);
                 }),

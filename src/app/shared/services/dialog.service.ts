@@ -21,7 +21,7 @@ export class DialogService {
         duration?: number;
     }) {
         this.snackBar.open(this.titleCase.transform(message), action, {
-            duration: duration || 3000,
+            duration: duration || 10000,
         });
     }
 

@@ -1,8 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { DialogService } from '../services';
 
@@ -14,14 +13,16 @@ export class CatchHttpErrorInterceptor implements HttpInterceptor {
         request: HttpRequest<unknown>,
         next: HttpHandler,
     ): Observable<HttpEvent<unknown>> {
-        return next.handle(request).pipe(
+        return next
+            .handle(request)
+            .pipe
             // tap(() => {
             //     console.log('CatchHttpErrorInterceptor');
             // }),
-            catchError((error: Error) => {
-                this.dialog.show({ message: error.message });
-                return throwError(error);
-            }),
-        );
+            // catchError((error: Error) => {
+            //     this.dialog.show({ message: error.message });
+            //     return throwError(error);
+            // }),
+            ();
     }
 }
