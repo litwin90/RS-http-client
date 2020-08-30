@@ -16,10 +16,6 @@ export class CatchHttpErrorInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<unknown>> {
         console.log('Current interceptor: CatchHttpErrorInterceptor');
 
-        console.log(`Next interceptor:`);
-
-        console.log(next);
-
         return next.handle(request).pipe(
             catchError((error: Error) => {
                 this.dialog.show({ message: error.message });

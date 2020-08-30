@@ -12,10 +12,6 @@ export class DelayInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<unknown>> {
         console.log('Current interceptor: DelayInterceptor');
 
-        console.log(`Next interceptor:`);
-
-        console.log(next);
-
         return next.handle(request).pipe(delay(2000));
     }
 }

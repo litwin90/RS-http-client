@@ -16,10 +16,6 @@ export class ProgressBarInterceptor implements HttpInterceptor {
         this.progressBar.show();
         console.log('Current interceptor: ProgressBarInterceptor');
 
-        console.log(`Next interceptor:`);
-
-        console.log(next);
-
         return next.handle(request).pipe(
             finalize(() => {
                 this.progressBar.hide();
