@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, retry } from 'rxjs/operators';
 
 import { IConfig } from '../models/IConfig';
 import { DialogService } from './dialog.service';
@@ -20,7 +20,7 @@ export class ConfigService {
     getConfig() {
         return this.http
             .get<IConfig>(this.configUrl, { observe: 'response' })
-            .pipe(catchError(this.handleError.bind(this)));
+            .pipe(retry(3), catchError(this.handleError.bind(this)));
     }
 
     private handleError(errorResponse: HttpErrorResponse) {
