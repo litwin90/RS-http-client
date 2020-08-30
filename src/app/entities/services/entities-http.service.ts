@@ -2,24 +2,35 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
+import { ConfigService } from '../../shared';
 import { IEntity } from '../models';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EntitiesHttpService {
-    // shouldReturnError = false;
-
-    constructor(private http: HttpClient) {}
+    constructor(
+        private http: HttpClient,
+        private configService: ConfigService,
+    ) {}
 
     getEntities(): Observable<IEntity[]> {
-        return this.http.get<IEntity[]>(environment.apiEntitiesUrl);
+        const { config } = this.configService;
 
-        // return this.shouldReturnError
-        //     ? Observable.throw('Smth wrong')
-        //     : this.http.get<IEntity[]>(environment.apiEntitiesUrl);
+        if (!config) {
+            return this.configService
+                .getConfig()
+                .pipe(
+                    switchMap(({ apiEntitiesUrl }) =>
+                        this.http.get<IEntity[]>(apiEntitiesUrl),
+                    ),
+                );
+        }
+
+        return this.http.get<IEntity[]>(config.apiEntitiesUrl);
     }
 
     addEntity(entity: Pick<IEntity, 'name'>): Observable<IEntity> {
