@@ -18,6 +18,20 @@ export class ResponseInterceptorA implements HttpInterceptor {
                     // do smth with response
 
                     console.log('Current interceptor: ResponseInterceptorA');
+
+                    return new HttpResponse({
+                        ...event,
+                        body: [
+                            {
+                                name: 'New Entity',
+                                id: 't-8_2AJ',
+                            },
+                            {
+                                name: 'New Entity',
+                                id: '9t-guY0',
+                            },
+                        ],
+                    });
                 }
                 return event;
             }),
