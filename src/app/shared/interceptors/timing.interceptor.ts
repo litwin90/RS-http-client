@@ -17,17 +17,19 @@ export class TimingInterceptor implements HttpInterceptor {
         next: HttpHandler,
     ): Observable<HttpEvent<unknown>> {
         const startDate = Date.now();
+        console.log('Current interceptor: TimingInterceptor');
+
+        console.log(`Next interceptor:`);
+
+        console.log(next);
+
         return next.handle(request).pipe(
-            // tap(() => {
-            //     console.log('TimingInterceptor');
-            // }),
             map((event: HttpEvent<any>) => {
                 if (
                     event instanceof HttpResponse &&
                     event.url.includes(environment.apiEntitiesUrl)
                 ) {
                     const requestTiming = Date.now() - startDate;
-                    console.log(`Products request timing: ${requestTiming}`);
                 }
                 return event;
             }),
