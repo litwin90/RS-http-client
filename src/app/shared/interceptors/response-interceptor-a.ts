@@ -1,10 +1,12 @@
 import {
-    HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse
+    HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { logConfig } from './loger-config';
 
 @Injectable()
 export class ResponseInterceptorA implements HttpInterceptor {
@@ -12,26 +14,34 @@ export class ResponseInterceptorA implements HttpInterceptor {
         request: HttpRequest<unknown>,
         next: HttpHandler,
     ): Observable<HttpEvent<unknown>> {
+        if (logConfig.logIntercept) {
+            console.log('intercept : ResponseInterceptorA');
+        }
+
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
-                if (event instanceof HttpResponse) {
-                    // do smth with response
-
-                    console.log('Current interceptor: ResponseInterceptorA');
-
-                    return new HttpResponse({
-                        ...event,
-                        body: [
-                            {
-                                name: 'New Entity',
-                                id: 't-8_2AJ',
-                            },
-                            {
-                                name: 'New Entity',
-                                id: '9t-guY0',
-                            },
-                        ],
-                    });
+                switch (event.type) {
+                    case HttpEventType.Sent:
+                        console.log('Sent : ResponseInterceptorA');
+                        break;
+                    case HttpEventType.UploadProgress:
+                        console.log('UploadProgress : ResponseInterceptorA');
+                        break;
+                    case HttpEventType.ResponseHeader:
+                        console.log('ResponseHeader : ResponseInterceptorA');
+                        break;
+                    case HttpEventType.DownloadProgress:
+                        console.log('DownloadProgress : ResponseInterceptorA');
+                        break;
+                    case HttpEventType.Response:
+                        console.log('Response : ResponseInterceptorA');
+                        break;
+                    case HttpEventType.User:
+                        console.log('User : ResponseInterceptorA');
+                        break;
+                    default: {
+                        console.log('Unknown event');
+                    }
                 }
                 return event;
             }),

@@ -1,12 +1,12 @@
 import {
-    HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse
+    HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
+import { logConfig } from './loger-config';
 
 @Injectable()
 export class TimingInterceptor implements HttpInterceptor {
@@ -17,15 +17,34 @@ export class TimingInterceptor implements HttpInterceptor {
         next: HttpHandler,
     ): Observable<HttpEvent<unknown>> {
         const startDate = Date.now();
-        console.log('Current interceptor: TimingInterceptor');
+        if (logConfig.logIntercept) {
+            console.log('intercept : TimingInterceptor');
+        }
 
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
-                if (
-                    event instanceof HttpResponse &&
-                    event.url.includes(environment.apiEntitiesUrl)
-                ) {
-                    const requestTiming = Date.now() - startDate;
+                switch (event.type) {
+                    case HttpEventType.Sent:
+                        console.log('Sent : TimingInterceptor');
+                        break;
+                    case HttpEventType.UploadProgress:
+                        console.log('UploadProgress : TimingInterceptor');
+                        break;
+                    case HttpEventType.ResponseHeader:
+                        console.log('ResponseHeader : TimingInterceptor');
+                        break;
+                    case HttpEventType.DownloadProgress:
+                        console.log('DownloadProgress : TimingInterceptor');
+                        break;
+                    case HttpEventType.Response:
+                        console.log('Response : TimingInterceptor');
+                        break;
+                    case HttpEventType.User:
+                        console.log('User : TimingInterceptor');
+                        break;
+                    default: {
+                        console.log('Unknown event');
+                    }
                 }
                 return event;
             }),

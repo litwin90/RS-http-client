@@ -13,7 +13,9 @@ export class EntitiesHttpService {
     constructor(private http: HttpClient) {}
 
     getEntities(): Observable<IEntity[]> {
-        return this.http.get<IEntity[]>(environment.apiEntitiesUrl);
+        return this.http.get<IEntity[]>(environment.apiEntitiesUrl, {
+            reportProgress: true,
+        });
     }
 
     addEntity(entity: Pick<IEntity, 'name'>): Observable<IEntity> {
