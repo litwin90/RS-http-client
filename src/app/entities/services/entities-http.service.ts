@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -21,13 +21,35 @@ export class EntitiesHttpService {
         const { config } = this.configService;
 
         if (!config) {
-            return this.configService
-                .getConfig()
-                .pipe(
-                    switchMap(({ apiEntitiesUrl }) =>
-                        this.http.get<IEntity[]>(apiEntitiesUrl),
-                    ),
-                );
+            return this.configService.getConfig().pipe(
+                switchMap((response) => {
+                    if (response) {
+                        const {
+                            body,
+                            headers,
+                            ok,
+                            status,
+                            statusText,
+                            type,
+                            url,
+                        } = response;
+
+                        const keys = headers.keys();
+                        console.log(`Response is ok: ${ok}`);
+                        console.log(`Response status: ${status}`);
+                        console.log(`Response statusText: ${statusText}`);
+                        console.log(`Response type: ${type}`);
+                        console.log(`Response url: ${url}`);
+                        console.log(`Response headers keys: ${keys}`);
+
+                        console.log('Response object:');
+                        console.log(response);
+
+                        return this.http.get<IEntity[]>(body.apiEntitiesUrl);
+                    }
+                    return of([]);
+                }),
+            );
         }
 
         return this.http.get<IEntity[]>(config.apiEntitiesUrl);

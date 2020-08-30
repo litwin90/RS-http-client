@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { IConfig } from '../models/IConfig';
 
@@ -16,11 +16,16 @@ export class ConfigService {
 
     constructor(private http: HttpClient) {}
 
-    getConfig(): Observable<IConfig> {
-        return this.http.get<IConfig>(this.configUrl).pipe(
-            tap((config) => {
-                this.config = { ...config };
-            }),
-        );
+    getConfig() {
+        return this.http
+            .get<IConfig>(this.configUrl, { observe: 'response' })
+            .pipe(
+                catchError((errorResponse) => {
+                    console.log('Error response object:');
+
+                    console.log(errorResponse);
+                    return of(null);
+                }),
+            );
     }
 }
