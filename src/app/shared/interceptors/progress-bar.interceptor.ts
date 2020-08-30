@@ -14,10 +14,13 @@ export class ProgressBarInterceptor implements HttpInterceptor {
         next: HttpHandler,
     ): Observable<HttpEvent<unknown>> {
         this.progressBar.show();
+        console.log('Current interceptor: ProgressBarInterceptor');
+
+        console.log(`Next interceptor:`);
+
+        console.log(next);
+
         return next.handle(request).pipe(
-            // tap(() => {
-            //     console.log('ProgressBarInterceptor');
-            // }),
             finalize(() => {
                 this.progressBar.hide();
             }),

@@ -14,10 +14,13 @@ export class CatchHttpErrorInterceptor implements HttpInterceptor {
         request: HttpRequest<unknown>,
         next: HttpHandler,
     ): Observable<HttpEvent<unknown>> {
+        console.log('Current interceptor: CatchHttpErrorInterceptor');
+
+        console.log(`Next interceptor:`);
+
+        console.log(next);
+
         return next.handle(request).pipe(
-            // tap(() => {
-            //     console.log('CatchHttpErrorInterceptor');
-            // }),
             catchError((error: Error) => {
                 this.dialog.show({ message: error.message });
                 return throwError(error);
